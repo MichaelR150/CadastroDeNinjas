@@ -33,9 +33,9 @@ public class NinjaController {
     }
 
     // Procurar ninja por ID (READ)
-    @GetMapping("/listarId/{id}")
+    @GetMapping("/listar/{id}")
     public Optional<NinjaModel> listarNinjasId(@PathVariable Long id){
-        return ninjaService.listarNinjasId(id);
+        return Optional.ofNullable(ninjaService.listarNinjasId(id));
     }
 
     // Alterar dados dos ninjas (UPDATE)
