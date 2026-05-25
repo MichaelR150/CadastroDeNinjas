@@ -1,5 +1,6 @@
 package dev.java10x.CadastroDeNinjas.Ninjas;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,15 +40,17 @@ public class NinjaController {
     }
 
     // Alterar dados dos ninjas (UPDATE)
-     @PutMapping("/alterarID")
-    public String alterarNinjaPorId(){
-        return "Alterado com sucesso!";
+     @PutMapping("/alterar/{id}")
+    public ResponseEntity<NinjaModel> alterarNinjaPorId(@PathVariable Long id, @RequestBody NinjaModel ninja){
+        NinjaModel ninjaAtualizado = ninjaService.alterarNinjaPorId(id, ninja);
+        return ResponseEntity.ok().body(ninjaAtualizado);
      }
 
     // Deletar Ninja (DELETE)
-    @DeleteMapping("/deletarID")
-    public String deletarNinjaPorId(){
-        return "Deletado com sucesso!";
+    @DeleteMapping("/deletar/{id}")
+    public ResponseEntity<String> deletarNinjaPorId(@PathVariable Long id){
+        ninjaService.deletarNinjaPorId(id);
+        return ResponseEntity.ok("Deletado com sucesso!");
     }
 
 }

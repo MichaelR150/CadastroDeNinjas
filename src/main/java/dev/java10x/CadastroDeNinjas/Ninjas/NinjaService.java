@@ -30,6 +30,27 @@ public class NinjaService {
         return ninjaRepository.save(ninja);
     }
 
+    // Deletar ninja por Id
+
+    public void deletarNinjaPorId(Long id) {
+        if(!ninjaRepository.existsById(id)){
+            throw new RuntimeException("Usuário nao encontrado!");
+        }
+        ninjaRepository.deleteById(id);
+    }
+
+    // Atualizar ninja por Id
+
+    public NinjaModel alterarNinjaPorId(Long id, NinjaModel ninja) {
+        NinjaModel ninjaAtualizado = ninjaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado!"));
+
+        ninjaAtualizado.setNome(ninja.getNome());
+        ninjaAtualizado.setEmail(ninja.getEmail());
+        ninjaAtualizado.setIdade(ninja.getIdade());
+        ninjaAtualizado.setMissoes(ninja.getMissoes());
+        return ninjaRepository.save(ninjaAtualizado);
+    }
 
 
 
