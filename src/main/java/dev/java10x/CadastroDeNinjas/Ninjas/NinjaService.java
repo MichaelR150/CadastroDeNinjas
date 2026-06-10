@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class NinjaService {
@@ -17,14 +18,17 @@ public class NinjaService {
     }
 
     // Listar todos os ninjas
-    public List<NinjaModel> listarNinjas(){
-        return ninjaRepository.findAll();
+    public List<NinjaDTO> listarNinjas(){
+        List<NinjaModel> ninjas = ninjaRepository.findAll();
+        return ninjas.stream()
+                .map(NinjaMapper::map)
+                .collect(Collectors.toList());
     }
 
     // Listar por ID
-    public NinjaModel listarNinjasId(Long id){
-        Optional<NinjaModel> ninja = ninjaRepository.findById(id);
-        return ninja.orElse(null);
+    public NinjaDTO listarNinjasId(Long id){
+        Optional<NinjaModel> ninjaPorId = ninjaRepository.findById(id);
+        return ninjaPorId.map(NinjaMapper::map).orElse(null);
     }
 
     // Criar um novo ninja
@@ -47,15 +51,15 @@ public class NinjaService {
 
     // Atualizar ninja por Id
 
-    public NinjaModel alterarNinjaPorId(Long id, NinjaModel ninja) {
-        NinjaModel ninjaAtualizado = ninjaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado!"));
-
-        ninjaAtualizado.setNome(ninja.getNome());
-        ninjaAtualizado.setEmail(ninja.getEmail());
-        ninjaAtualizado.setIdade(ninja.getIdade());
-        ninjaAtualizado.setMissoes(ninja.getMissoes());
-        return ninjaRepository.save(ninjaAtualizado);
+    public NinjaDTO alterarNinjaPorId(Long id, NinjaDTO ninjaDTO) {
+        Optional<NinjaModel> ninjaExistente = ninjaRepository.findById(id);
+        if(ninjaExistente.isPresent()){
+            NinjaModel ninjaAtualizado = NinjaMapper.map(ninjaDTO);
+            ninjaAtualizado.setId(id);
+            NinjaModel ninjaSalvo = ninjaRepository.save(ninjaAtualizado);
+            return ninjaMapper.map(ninjaSalvo);
+        }
+        return null;
     }
 
 
